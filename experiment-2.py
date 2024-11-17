@@ -52,7 +52,6 @@ for trial_num, stimulus in enumerate(stimuli, start=1):
     # Wait for a valid choice
     while not choice_made:
         keys = event.getKeys(keyList=["1", "2", "escape"])
-        print(f"keys -> {keys}")
         if "escape" in keys:
             data_file.close()
             win.close()
@@ -68,7 +67,7 @@ for trial_num, stimulus in enumerate(stimuli, start=1):
     # Strategy Implementation (display the image for 5s)
     img.draw()
     win.flip()
-    core.wait(5)
+    core.wait(0.5)
 
     # Collect Arousal Rating
     arousal_slider.reset()  # Reset the slider for each trial
