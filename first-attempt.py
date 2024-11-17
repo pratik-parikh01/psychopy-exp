@@ -2,6 +2,12 @@ from psychopy import visual, core, event, data, gui
 import random
 import os
 
+# Get the absolute path of the current file (script)
+current_file_path = os.path.abspath(__file__)
+
+# Get the directory containing the current file
+current_directory = os.path.dirname(current_file_path)
+
 # Experiment Setup
 experiment_info = {"Participant": ""}
 dlg = gui.DlgFromDict(experiment_info)
@@ -9,7 +15,7 @@ if not dlg.OK:
     core.quit()
 
 # Directory to save the data
-data_dir = "/Users/pratik/Desktop/anjana/data/"
+data_dir = f"{current_directory}/data/"
 if not os.path.exists(data_dir):
     os.makedirs(data_dir)
 
@@ -21,13 +27,12 @@ data_file.write("trial,picture,choice,choice_time,arousal_rating\n")
 win = visual.Window(fullscr=True, color="black", units="height")
 
 # List of image stimuli (update with actual image paths)
-image_dir = "/Users/pratik/Desktop/anjana/images/"
-stimuli = ["image1.jpg", "image2.jpg"]  # Replace with actual filenames
-stimuli = [os.path.join(image_dir, img) for img in stimuli]
+image_dir = f"{current_directory}/images/"
+stimuli = [os.path.join(root, file) for root, _, files in os.walk(image_dir) for file in files]
 
 # Choice and rating setup
 choice_text = visual.TextStim(win, text="Choose a strategy:\n1: Use Distraction\n2: Use Reappraisal", color="white", height=0.05)
-arousal_slider = visual.Slider(win, ticks=(1, 9), labels=["No Arousal", "High Arousal"], pos=(0, -0.3), size=(1.0, 0.05), style="rating")
+arousal_slider = visual.Slider(win, ticks=(1, 2, 3, 4, 5, 6, 7, 8, 9), labels=["No Arousal (1)", "2", "3", "4", "5", "6", "7", "8", "High Arousal (9)"], pos=(0, -0.3), size=(1.0, 0.05), style="rating")
 
 # Trial Loop
 for trial_num, stimulus in enumerate(stimuli, start=1):
@@ -35,7 +40,7 @@ for trial_num, stimulus in enumerate(stimuli, start=1):
     img = visual.ImageStim(win, image=stimulus, size=(1.5, 1.5))
     img.draw()
     win.flip()
-    core.wait(0.5)
+    core.wait(5) # time in seconds
 
     # Choice Screen
     choice_text.draw()
@@ -47,6 +52,7 @@ for trial_num, stimulus in enumerate(stimuli, start=1):
     # Wait for a valid choice
     while not choice_made:
         keys = event.getKeys(keyList=["1", "2", "escape"])
+        print(f"keys -> {keys}")
         if "escape" in keys:
             data_file.close()
             win.close()
